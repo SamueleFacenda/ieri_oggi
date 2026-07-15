@@ -28,7 +28,16 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from werkzeug.utils import secure_filename  # noqa: F401  (utile per futuri usi)
 
 from .images import ImmagineNonValida, MIME, processa
-from .models import CATEGORIE, GIOVANE, RECENTE, Base, Person, Photo, make_engine
+from .models import (
+    CATEGORIE,
+    GIOVANE,
+    RECENTE,
+    Base,
+    Person,
+    Photo,
+    assicura_schema,
+    make_engine,
+)
 
 # --- Configurazione -------------------------------------------------------
 
@@ -102,6 +111,7 @@ def crea_app(config: dict | None = None) -> Flask:
 
     engine = make_engine(db_url)
     Base.metadata.create_all(engine)
+    assicura_schema(engine)
     SessionLocal = scoped_session(sessionmaker(bind=engine, future=True))
     app.extensions["db_session"] = SessionLocal
 
@@ -192,16 +202,18 @@ def crea_app(config: dict | None = None) -> Flask:
         stmt = select(Person).order_by(Person.cognome, Person.nome)
         if q:
             like = f"%{q}%"
-            stmt = stmt.where(
-                or_(
-                    Person.nome.ilike(like),
-                    Person.cognome.ilike(like),
-                    Person.descrizione.ilike(like),
-                    Person.indirizzo.ilike(like),
-                )
-            )
+            # Il pubblico cerca solo su nome/cognome/descrizione; i dettagli
+            # personali (indirizzo, telefono) sono cercabili solo con la password.
+            campi = [Person.nome, Person.cognome, Person.descrizione]
+            if autenticato():
+                campi += [Person.indirizzo, Person.telefono]
+            stmt = stmt.where(or_(*[c.ilike(like) for c in campi]))
         persone = db().scalars(stmt).all()
         return render_template("gallery.html", persone=persone, q=q)
+
+    @app.route("/privacy")
+    def privacy():
+        return render_template("privacy.html")
 
     @app.route("/persona/<int:pid>")
     def dettaglio(pid: int):
@@ -245,6 +257,7 @@ def crea_app(config: dict | None = None) -> Flask:
                 nome=nome,
                 cognome=cognome,
                 indirizzo=(request.form.get("indirizzo") or "").strip() or None,
+                telefono=(request.form.get("telefono") or "").strip() or None,
                 descrizione=(request.form.get("descrizione") or "").strip() or None,
                 data_nascita=parse_data(request.form.get("data_nascita")),
             )
@@ -271,6 +284,7 @@ def crea_app(config: dict | None = None) -> Flask:
             persona.nome = nome
             persona.cognome = cognome
             persona.indirizzo = (request.form.get("indirizzo") or "").strip() or None
+            persona.telefono = (request.form.get("telefono") or "").strip() or None
             persona.descrizione = (request.form.get("descrizione") or "").strip() or None
             persona.data_nascita = parse_data(request.form.get("data_nascita"))
 

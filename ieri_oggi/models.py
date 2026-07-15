@@ -43,6 +43,7 @@ class Person(Base):
     nome: Mapped[str] = mapped_column(String(120), nullable=False)
     cognome: Mapped[str] = mapped_column(String(120), nullable=False)
     indirizzo: Mapped[str | None] = mapped_column(String(255))
+    telefono: Mapped[str | None] = mapped_column(String(60))
     descrizione: Mapped[str | None] = mapped_column(Text)
     data_nascita: Mapped[dt.date | None] = mapped_column(Date)
     creato_il: Mapped[dt.datetime] = mapped_column(DateTime, server_default=func.now())
@@ -108,3 +109,20 @@ def make_engine(database_url: str):
             cur.close()
 
     return engine
+
+
+def assicura_schema(engine) -> None:
+    """Migrazione minima per SQLite.
+
+    `create_all` non altera le tabelle esistenti: aggiunge qui le colonne
+    introdotte dopo il primo deploy, in modo idempotente, senza perdere dati.
+    """
+    from sqlalchemy import inspect, text
+
+    insp = inspect(engine)
+    if "persone" not in insp.get_table_names():
+        return
+    colonne = {c["name"] for c in insp.get_columns("persone")}
+    if "telefono" not in colonne:
+        with engine.begin() as conn:
+            conn.execute(text("ALTER TABLE persone ADD COLUMN telefono VARCHAR(60)"))

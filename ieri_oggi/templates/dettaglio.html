@@ -25,14 +25,23 @@
   <article class="scheda">
     <h1>{{ persona.nome }} {{ persona.cognome }}</h1>
 
-    <dl class="dati">
-      {% if persona.data_nascita %}
-        <dt>Data di nascita</dt><dd>{{ persona.data_nascita.strftime('%d/%m/%Y') }}</dd>
-      {% endif %}
-      {% if persona.indirizzo %}
-        <dt>Indirizzo</dt><dd>{{ persona.indirizzo }}</dd>
-      {% endif %}
-    </dl>
+    {# Dettagli personali: privati, visibili solo con la password. #}
+    {% set ha_dettagli = persona.data_nascita or persona.indirizzo or persona.telefono %}
+    {% if autenticato %}
+      <dl class="dati">
+        {% if persona.data_nascita %}
+          <dt>Data di nascita</dt><dd>{{ persona.data_nascita.strftime('%d/%m/%Y') }}</dd>
+        {% endif %}
+        {% if persona.indirizzo %}
+          <dt>Indirizzo</dt><dd>{{ persona.indirizzo }}</dd>
+        {% endif %}
+        {% if persona.telefono %}
+          <dt>Telefono</dt><dd><a href="tel:{{ persona.telefono }}">{{ persona.telefono }}</a></dd>
+        {% endif %}
+      </dl>
+    {% elif ha_dettagli %}
+      <p class="muto">🔒 Alcuni dettagli sono privati e visibili solo con la password.</p>
+    {% endif %}
 
     {% if persona.descrizione %}
       <p class="descrizione">{{ persona.descrizione }}</p>

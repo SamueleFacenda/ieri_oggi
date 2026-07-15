@@ -12,6 +12,12 @@ add, edit, or delete a profile.
 Italian interface, minimal and responsive (mobile + desktop). Photos are stored
 as BLOBs inside a single SQLite file — no external storage.
 
+**Privacy:** the gallery shows only names, descriptions and photos to the
+public; the **personal details** (address, phone, birth date) are visible and
+searchable **only when logged in** with the passphrase. Every page links to a
+short privacy statement at `/privacy` (data controller: Samuele Facenda —
+samuele.facenda@gmail.com).
+
 > [!NOTE]
 > Claude misanderstood the "UI must be in italian" and all the function names, variable names and comments are in italian now.
 > Ugly but it works.

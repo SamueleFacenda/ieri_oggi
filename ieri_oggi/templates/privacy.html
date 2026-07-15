@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block titolo %}Informativa privacy — Ieri & Oggi{% endblock %}
+
+{% block contenuto %}
+  <p><a href="{{ url_for('gallery') }}">← Torna alla galleria</a></p>
+
+  <article class="testo">
+    <h1>Informativa sulla privacy</h1>
+
+    <p class="muto">
+      Questa non è un'informativa legale formale: è una spiegazione semplice e
+      onesta di cosa fa questo piccolo sito e come tratta i dati.
+    </p>
+
+    <h2>A cosa serve questo sito</h2>
+    <p>
+      «Ieri &amp; Oggi» è un progetto amatoriale e a uso strettamente privato,
+      pensato per una cerchia ristretta di persone che conoscono direttamente chi
+      lo ha realizzato e che hanno ricevuto la password <strong>direttamente da
+      lui</strong>. Non è un servizio pubblico, non ha scopi commerciali e non è
+      pensato per essere condiviso al di fuori di questo piccolo gruppo. Anche se
+      è raggiungibile da Internet, il pubblico previsto resta limitato.
+    </p>
+
+    <h2>Chi gestisce i dati</h2>
+    <p>
+      I dati sono raccolti e conservati da <strong>Samuele Facenda</strong>.
+      Per qualsiasi richiesta scrivi a
+      <a href="mailto:samuele.facenda@gmail.com">samuele.facenda@gmail.com</a>.
+    </p>
+
+    <h2>Quali dati vengono trattati</h2>
+    <ul>
+      <li><strong>Visibili a tutti:</strong> nome, cognome, eventuale
+        descrizione e fotografie.</li>
+      <li><strong>Privati (visibili solo con la password):</strong> indirizzo,
+        numero di telefono e data di nascita.</li>
+    </ul>
+
+    <h2>Come sono conservati</h2>
+    <p>
+      I dati sono salvati in modo sicuro dal gestore in un unico database su un
+      server privato. La modifica e la cancellazione dei profili sono protette da
+      una password condivisa solo con le persone di fiducia. I dati non vengono
+      ceduti a terzi. Il sito non usa strumenti di tracciamento o analisi né
+      cookie di profilazione: l'unico cookie è quello tecnico necessario a
+      mantenere la sessione di chi effettua l'accesso.
+    </p>
+
+    <h2>I tuoi diritti</h2>
+    <p>
+      Puoi chiedere in qualsiasi momento di vedere, correggere o cancellare i
+      dati che ti riguardano (o le tue foto) scrivendo all'indirizzo email qui
+      sopra: provvederemo il prima possibile.
+    </p>
+
+    <h2>Avvertenze</h2>
+    <p>
+      Il sito è un progetto di prova, fornito «così com'è», senza garanzie di
+      alcun tipo su disponibilità, correttezza o conservazione dei dati. Ti
+      chiediamo di non inserire informazioni personali o sensibili che non siano
+      strettamente necessarie allo scopo del sito.
+    </p>
+  </article>
+{% endblock %}

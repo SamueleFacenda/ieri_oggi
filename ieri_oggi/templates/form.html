@@ -35,6 +35,10 @@
       <input type="text" name="indirizzo" value="{{ val('indirizzo', persona.indirizzo if persona) }}">
     </label>
 
+    <label>Telefono
+      <input type="tel" name="telefono" inputmode="tel" value="{{ val('telefono', persona.telefono if persona) }}">
+    </label>
+
     <label>Descrizione
       <textarea name="descrizione" rows="4">{{ val('descrizione', persona.descrizione if persona) }}</textarea>
     </label>
