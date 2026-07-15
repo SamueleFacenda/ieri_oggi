@@ -48,7 +48,8 @@ def processa(file_bytes: bytes) -> tuple[bytes, bytes]:
     try:
         img = Image.open(io.BytesIO(file_bytes))
         img.load()
-    except (UnidentifiedImageError, OSError) as exc:
+    except (UnidentifiedImageError, OSError, Image.DecompressionBombError) as exc:
+        # DecompressionBombError: immagine con troppi pixel (possibile DoS).
         raise ImmagineNonValida(str(exc)) from exc
 
     img = _prepara(img)

@@ -10,6 +10,7 @@ import datetime as dt
 import os
 import secrets
 from functools import wraps
+from urllib.parse import urlsplit
 
 from flask import (
     Flask,
@@ -34,6 +35,21 @@ from models import CATEGORIE, GIOVANE, RECENTE, Base, Person, Photo, make_engine
 DEFAULT_DB = "sqlite:///" + os.path.join(os.path.dirname(__file__), "data", "app.db")
 
 
+def percorso_locale_sicuro(target: str) -> bool:
+    """Vero solo se `target` è un percorso relativo allo stesso sito.
+
+    Impedisce open redirect: rifiuta URL assoluti (`http://…`), quelli
+    relativi al protocollo (`//host`) e i backslash che alcuni browser
+    normalizzano in `//`.
+    """
+    if not target or not target.startswith("/") or target.startswith("//"):
+        return False
+    if "\\" in target:
+        return False
+    parti = urlsplit(target)
+    return not parti.scheme and not parti.netloc
+
+
 def crea_app(config: dict | None = None) -> Flask:
     app = Flask(__name__)
     app.config.update(
@@ -41,6 +57,12 @@ def crea_app(config: dict | None = None) -> Flask:
         PASSPHRASE=os.environ.get("PASSPHRASE", "nonni2026"),
         DATABASE_URL=os.environ.get("DATABASE_URL", DEFAULT_DB),
         MAX_CONTENT_LENGTH=int(os.environ.get("MAX_UPLOAD_MB", "250")) * 1024 * 1024,
+        # Rafforzamento cookie di sessione: HttpOnly + SameSite=Lax mitigano
+        # XSS-furto-cookie e CSRF sulle POST (crea/modifica/elimina). Secure va
+        # attivato in produzione dietro HTTPS (COOKIE_SECURE=1).
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE="Lax",
+        SESSION_COOKIE_SECURE=os.environ.get("COOKIE_SECURE", "0") == "1",
     )
     if config:
         app.config.update(config)
@@ -266,8 +288,8 @@ def crea_app(config: dict | None = None) -> Flask:
             if secrets.compare_digest(passphrase, atteso):
                 session["autenticato"] = True
                 flash("Accesso effettuato.", "success")
-                nxt = request.form.get("next") or url_for("gallery")
-                if not nxt.startswith("/"):
+                nxt = request.form.get("next") or ""
+                if not percorso_locale_sicuro(nxt):
                     nxt = url_for("gallery")
                 return redirect(nxt)
             flash("Passphrase errata.", "error")
