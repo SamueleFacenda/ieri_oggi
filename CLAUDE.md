@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-**Allora & Oggi** — a small, KISS web app hosting profiles of elderly people who knew each other when young. Each profile has personal data and two photo categories: **`giovane`** (young) and **`recente`** (recent). The gallery is public; a single shared **passphrase** gates create/edit/delete only. UI is in **Italian**, minimal and responsive. Photos are stored as **BLOBs inside SQLite** (resized/compressed on upload) — no external storage.
+**Ieri & Oggi** — a small, KISS web app hosting profiles of elderly people who knew each other when young. Each profile has personal data and two photo categories: **`giovane`** (young) and **`recente`** (recent). The gallery is public; a single shared **passphrase** gates create/edit/delete only. UI is in **Italian**, minimal and responsive. Photos are stored as **BLOBs inside SQLite** (resized/compressed on upload) — no external storage.
 
 Dependencies are managed by the **Nix flake** (`flake.nix` devShell): Flask, SQLAlchemy, Pillow, gunicorn.
 

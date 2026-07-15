@@ -1,4 +1,4 @@
-# Allora & Oggi
+# Ieri & Oggi
 
 Piccola web app per una galleria di profili di persone che si conoscevano da
 giovani. Ogni profilo ha dati anagrafici e due tipi di foto: **da giovane** e

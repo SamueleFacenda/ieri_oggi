@@ -1,4 +1,4 @@
-"""Modelli dati e sessione SQLAlchemy per "Allora & Oggi".
+"""Modelli dati e sessione SQLAlchemy per "Ieri & Oggi".
 
 Tutto in SQLite: dati anagrafici delle persone e foto salvate come BLOB.
 """

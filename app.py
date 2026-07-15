@@ -1,4 +1,4 @@
-"""Allora & Oggi - applicazione web KISS per una galleria di profili.
+"""Ieri & Oggi - applicazione web KISS per una galleria di profili.
 
 Gallery pubblica; passphrase condivisa per aggiungere/modificare/eliminare.
 Foto salvate come BLOB in SQLite. Tutto server-rendered con Jinja2.

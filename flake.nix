@@ -1,6 +1,6 @@
 # nix comments
 {
-  description = "Allora & Oggi - galleria profili con foto da giovani e recenti";
+  description = "Ieri & Oggi - galleria profili con foto da giovani e recenti";
 
   # Nixpkgs / NixOS version to use.
   inputs.nixpkgs.url = "nixpkgs/nixos-26.05";
@@ -49,7 +49,7 @@
             ];
 
             shellHook = ''
-              echo "Allora & Oggi - devShell pronta."
+              echo "Ieri & Oggi - devShell pronta."
               echo "Avvio sviluppo:  flask --app app run --debug"
               echo "Apri:            http://127.0.0.1:5000"
             '';

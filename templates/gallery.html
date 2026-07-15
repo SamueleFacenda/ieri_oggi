@@ -14,7 +14,7 @@
           <a href="{{ url_for('dettaglio', pid=p.id) }}">
             {% if giovane or recente %}
               <div class="card-confronto">
-                {% for foto, etichetta in [(giovane, 'Allora'), (recente, 'Oggi')] %}
+                {% for foto, etichetta in [(giovane, 'Ieri'), (recente, 'Oggi')] %}
                   <figure class="card-foto">
                     {% if foto %}
                       <img src="{{ url_for('foto_thumb', fid=foto.id) }}"
