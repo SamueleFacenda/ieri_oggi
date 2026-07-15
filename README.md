@@ -85,7 +85,7 @@ in the Nix store or the process environment.
 ```nix
 # flake.nix of your system config
 {
-  inputs.ieri-oggi.url = "github:you/ieri-oggi";   # or path:/…
+  inputs.ieri-oggi.url = "github:SamueleFacenda/ieri_oggi";   # or path:/…
 
   outputs = { nixpkgs, ieri-oggi, ... }: {
     nixosConfigurations.myhost = nixpkgs.lib.nixosSystem {
