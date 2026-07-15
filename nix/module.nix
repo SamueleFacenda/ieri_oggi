@@ -72,6 +72,17 @@ in
       default = false;
       description = "Imposta il flag Secure sui cookie di sessione. Attivalo quando servi dietro HTTPS.";
     };
+
+    trustProxy = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        Onora gli header X-Forwarded-* (Proto/Host/For/Prefix) di un reverse
+        proxy fidato. Necessario per servire l'app dietro HTTPS con URL corretti
+        e, tramite X-Forwarded-Prefix, su un sottopercorso (es. /ieri). Attivalo
+        solo quando c'è davvero un proxy davanti.
+      '';
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -86,6 +97,7 @@ in
         DATABASE_URL = "sqlite:///${stateDir}/app.db";
         MAX_UPLOAD_MB = toString cfg.maxUploadMb;
         COOKIE_SECURE = if cfg.cookieSecure then "1" else "0";
+        TRUST_PROXY = if cfg.trustProxy then "1" else "0";
         # %d = directory delle credenziali (LoadCredential).
         PASSPHRASE_FILE = "%d/passphrase";
         SECRET_KEY_FILE =

@@ -83,6 +83,17 @@ def crea_app(config: dict | None = None) -> Flask:
     if config:
         app.config.update(config)
 
+    # Dietro un reverse proxy fidato (es. nginx), onora gli header
+    # X-Forwarded-*: -Proto/-Host per gli URL corretti e -Prefix per montare
+    # l'app su un sottopercorso (SCRIPT_NAME). Da attivare SOLO dietro proxy,
+    # altrimenti i client potrebbero falsificare gli header.
+    if os.environ.get("TRUST_PROXY") == "1":
+        from werkzeug.middleware.proxy_fix import ProxyFix
+
+        app.wsgi_app = ProxyFix(
+            app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
+        )
+
     # Assicura la cartella del DB sqlite.
     db_url = app.config["DATABASE_URL"]
     if db_url.startswith("sqlite:///"):
@@ -115,7 +126,11 @@ def crea_app(config: dict | None = None) -> Flask:
         def wrapper(*args, **kwargs):
             if not autenticato():
                 flash("Inserisci la passphrase per continuare.", "info")
-                return redirect(url_for("accedi", next=request.full_path))
+                # script_root include l'eventuale prefisso (SCRIPT_NAME) quando
+                # l'app è montata su un sottopercorso: così il redirect
+                # post-login torna all'URL giusto anche dietro reverse proxy.
+                dopo = request.script_root + request.full_path
+                return redirect(url_for("accedi", next=dopo))
             return view(*args, **kwargs)
 
         return wrapper

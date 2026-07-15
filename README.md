@@ -130,6 +130,34 @@ services.nginx.virtualHosts."ieri.example.org" = {
 # and set services.ieri-oggi.cookieSecure = true;
 ```
 
-`proxyPass` already sets sensible `Host`/`X-Forwarded-*` headers. Redirects are
-relative and login is scheme-agnostic, so Flask `ProxyFix` is not needed unless
-you later require the real client IP or external URL building.
+`proxyPass` already sets sensible `Host`/`X-Forwarded-*` headers. For a plain
+root mount over HTTPS this is enough (`cookieSecure = true` handles the Secure
+flag); `trustProxy` is only required for the subpath case below.
+
+### On a subpath (e.g. `/ieri/`)
+
+Yes, this works, but the app must be told its mount prefix — set
+`services.ieri-oggi.trustProxy = true;` (it makes the app honor
+`X-Forwarded-Prefix`, so `url_for`, static files, and the post-login redirect
+all stay under the prefix). Then in nginx **strip the prefix** (trailing slash
+on `proxy_pass`) and **forward it** as a header:
+
+```nix
+services.ieri-oggi.trustProxy = true;
+
+services.nginx.virtualHosts."example.org".locations = {
+  # redirect the bare path to the trailing-slash form
+  "= /ieri".extraConfig = "return 301 /ieri/;";
+  "/ieri/" = {
+    proxyPass = "http://127.0.0.1:8000/";   # trailing slash strips /ieri/
+    extraConfig = ''
+      proxy_set_header X-Forwarded-Prefix /ieri;
+      proxy_set_header X-Forwarded-Proto  $scheme;
+      client_max_body_size 250m;
+    '';
+  };
+};
+```
+
+Without `trustProxy` + `X-Forwarded-Prefix`, static assets and the redirect
+after login would point at the domain root and break.
