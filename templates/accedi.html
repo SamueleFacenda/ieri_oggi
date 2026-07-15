@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block titolo %}Accedi — Allora & Oggi{% endblock %}
+
+{% block contenuto %}
+  <div class="accesso">
+    <h1>Inserisci la passphrase</h1>
+    <p class="muto">Serve solo per aggiungere o modificare un profilo. La galleria è libera.</p>
+    <form class="modulo" method="post" action="{{ url_for('accedi') }}">
+      <input type="hidden" name="next" value="{{ next }}">
+      <label>Passphrase
+        <input type="password" name="passphrase" autofocus autocomplete="current-password">
+      </label>
+      <button type="submit" class="btn btn-primario btn-grande">Entra</button>
+    </form>
+  </div>
+{% endblock %}

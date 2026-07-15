@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titolo %}Allora & Oggi{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="{{ url_for('gallery') }}">Allora &amp; Oggi</a>
+
+      <form class="cerca" action="{{ url_for('gallery') }}" method="get" role="search">
+        <input type="search" name="q" value="{{ q|default('', true) }}"
+               placeholder="Cerca una persona…" aria-label="Cerca">
+        <button type="submit" aria-label="Cerca">🔍</button>
+      </form>
+
+      <div class="azioni">
+        <a class="btn btn-primario" href="{{ url_for('nuovo') }}">＋ Aggiungi profilo</a>
+        {% if autenticato %}
+          <form action="{{ url_for('esci') }}" method="post" class="inline">
+            <button type="submit" class="btn btn-testo">Esci</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <main class="contenuto">
+    {% with messaggi = get_flashed_messages(with_categories=true) %}
+      {% if messaggi %}
+        <div class="flash-area">
+          {% for categoria, testo in messaggi %}
+            <div class="flash flash-{{ categoria }}">{{ testo }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block contenuto %}{% endblock %}
+  </main>
+</body>
+</html>

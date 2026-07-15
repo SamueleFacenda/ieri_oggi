@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block titolo %}{% if persona %}Modifica profilo{% else %}Nuovo profilo{% endif %} — Allora & Oggi{% endblock %}
+
+{#
+  form = None      -> GET modifica: usa i valori della persona
+  form = {}        -> GET nuovo: campi vuoti
+  form = richiesta -> POST con errore: ripristina i valori inviati
+#}
+{% set usa_form = form is not none %}
+{% macro val(nome, corrente) %}{% if usa_form %}{{ form.get(nome, '') }}{% else %}{{ corrente if corrente is not none else '' }}{% endif %}{% endmacro %}
+
+{% block contenuto %}
+  <p><a href="{{ url_for('gallery') }}">← Annulla</a></p>
+
+  <h1>{% if persona %}Modifica profilo{% else %}Nuovo profilo{% endif %}</h1>
+
+  <form class="modulo" method="post" enctype="multipart/form-data"
+        action="{% if persona %}{{ url_for('modifica', pid=persona.id) }}{% else %}{{ url_for('nuovo') }}{% endif %}">
+
+    <label>Nome *
+      <input type="text" name="nome" required value="{{ val('nome', persona.nome if persona) }}">
+    </label>
+
+    <label>Cognome *
+      <input type="text" name="cognome" required value="{{ val('cognome', persona.cognome if persona) }}">
+    </label>
+
+    <label>Data di nascita
+      <input type="text" name="data_nascita" inputmode="numeric"
+             placeholder="gg/mm/aaaa" pattern="\d{2}/\d{2}/\d{4}"
+             value="{% if usa_form %}{{ form.get('data_nascita', '') }}{% elif persona and persona.data_nascita %}{{ persona.data_nascita.strftime('%d/%m/%Y') }}{% endif %}">
+    </label>
+
+    <label>Indirizzo
+      <input type="text" name="indirizzo" value="{{ val('indirizzo', persona.indirizzo if persona) }}">
+    </label>
+
+    <label>Descrizione
+      <textarea name="descrizione" rows="4">{{ val('descrizione', persona.descrizione if persona) }}</textarea>
+    </label>
+
+    {% if persona %}
+      {% for cat, etichetta in [(GIOVANE, 'Da giovane'), (RECENTE, 'Oggi')] %}
+        {% set foto = persona.foto_categoria(cat) %}
+        {% if foto %}
+          <fieldset class="foto-esistenti">
+            <legend>Foto «{{ etichetta }}» attuali</legend>
+            <div class="foto-serie">
+              {% for f in foto %}
+                <label class="foto-item">
+                  <img src="{{ url_for('foto_thumb', fid=f.id) }}" alt="">
+                  <span class="foto-controlli">
+                    <label><input type="radio" name="cover_{{ cat }}" value="{{ f.id }}"
+                           {% if f.is_cover %}checked{% endif %}> copertina</label>
+                    <label><input type="checkbox" name="rimuovi" value="{{ f.id }}"> rimuovi</label>
+                  </span>
+                </label>
+              {% endfor %}
+            </div>
+          </fieldset>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    <label>Foto da giovane {% if not persona %}(una o più){% else %}(aggiungi){% endif %}
+      <input type="file" name="foto_giovane" accept="image/*" multiple>
+    </label>
+
+    <label>Foto recenti {% if not persona %}(una o più){% else %}(aggiungi){% endif %}
+      <input type="file" name="foto_recente" accept="image/*" multiple>
+    </label>
+
+    <div class="azioni-modulo">
+      <button type="submit" class="btn btn-primario btn-grande">Salva</button>
+    </div>
+  </form>
+{% endblock %}

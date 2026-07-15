@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block contenuto %}
+  {% if q %}
+    <p class="risultati">Risultati per «{{ q }}» — <a href="{{ url_for('gallery') }}">azzera</a></p>
+  {% endif %}
+
+  {% if persone %}
+    <ul class="griglia">
+      {% for p in persone %}
+        {% set giovane = p.cover(GIOVANE) %}
+        {% set recente = p.cover(RECENTE) %}
+        <li class="card">
+          <a href="{{ url_for('dettaglio', pid=p.id) }}">
+            {% if giovane or recente %}
+              <div class="card-confronto">
+                {% for foto, etichetta in [(giovane, 'Allora'), (recente, 'Oggi')] %}
+                  <figure class="card-foto">
+                    {% if foto %}
+                      <img src="{{ url_for('foto_thumb', fid=foto.id) }}"
+                           alt="{{ etichetta }}: {{ p.nome }} {{ p.cognome }}" loading="lazy">
+                    {% else %}
+                      <div class="card-noimg">Nessuna foto</div>
+                    {% endif %}
+                    <figcaption>{{ etichetta }}</figcaption>
+                  </figure>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="card-foto"><div class="card-noimg">Nessuna foto</div></div>
+            {% endif %}
+            <div class="card-nome">{{ p.nome }} {{ p.cognome }}</div>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="vuoto">
+      {% if q %}
+        <p>Nessuna persona trovata.</p>
+      {% else %}
+        <p>Non c'è ancora nessun profilo.</p>
+        <a class="btn btn-primario btn-grande" href="{{ url_for('nuovo') }}">Aggiungi il primo profilo</a>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock %}

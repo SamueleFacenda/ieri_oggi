@@ -1,0 +1,209 @@
+/* Allora & Oggi — stile minimale, leggibile, responsive.
+   Font grandi, alto contrasto, bottoni ampi per un uso facile. */
+
+:root {
+  --sfondo: #f7f5f0;
+  --superficie: #ffffff;
+  --testo: #1e1b16;
+  --muto: #6b6459;
+  --bordo: #d8d2c6;
+  --primario: #8a5a2b;
+  --primario-scuro: #6f4620;
+  --pericolo: #a12d2d;
+  --ok: #2f6b34;
+  --info: #2b5d8a;
+  --raggio: 14px;
+}
+
+* { box-sizing: border-box; }
+
+html { font-size: 18px; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--sfondo);
+  color: var(--testo);
+  line-height: 1.5;
+}
+
+a { color: var(--primario-scuro); }
+
+/* --- Barra superiore --- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--superficie);
+  border-bottom: 2px solid var(--bordo);
+}
+.topbar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0.7rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.brand {
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-decoration: none;
+  color: var(--primario-scuro);
+  white-space: nowrap;
+}
+.cerca {
+  display: flex;
+  flex: 1 1 240px;
+  min-width: 180px;
+}
+.cerca input {
+  flex: 1;
+  font-size: 1.1rem;
+  padding: 0.6rem 0.8rem;
+  border: 2px solid var(--bordo);
+  border-right: none;
+  border-radius: var(--raggio) 0 0 var(--raggio);
+}
+.cerca button {
+  font-size: 1.2rem;
+  padding: 0 1rem;
+  border: 2px solid var(--bordo);
+  border-radius: 0 var(--raggio) var(--raggio) 0;
+  background: var(--sfondo);
+  cursor: pointer;
+}
+.azioni { display: flex; align-items: center; gap: 0.5rem; }
+
+/* --- Bottoni --- */
+.btn {
+  display: inline-block;
+  font-size: 1.05rem;
+  padding: 0.65rem 1.1rem;
+  min-height: 44px;
+  border: 2px solid var(--bordo);
+  border-radius: var(--raggio);
+  background: var(--superficie);
+  color: var(--testo);
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1.2;
+}
+.btn:hover { background: var(--sfondo); }
+.btn-primario {
+  background: var(--primario);
+  border-color: var(--primario);
+  color: #fff;
+  font-weight: 700;
+}
+.btn-primario:hover { background: var(--primario-scuro); border-color: var(--primario-scuro); }
+.btn-grande { font-size: 1.2rem; padding: 0.9rem 1.5rem; }
+.btn-pericolo { border-color: var(--pericolo); color: var(--pericolo); }
+.btn-pericolo:hover { background: var(--pericolo); color: #fff; }
+.btn-testo { border-color: transparent; background: transparent; }
+.inline { display: inline; margin: 0; }
+
+/* --- Contenuto --- */
+.contenuto { max-width: 1100px; margin: 0 auto; padding: 1.2rem 1rem 3rem; }
+
+.flash-area { margin-bottom: 1rem; }
+.flash {
+  padding: 0.8rem 1rem;
+  border-radius: var(--raggio);
+  margin-bottom: 0.5rem;
+  border: 2px solid;
+}
+.flash-success { border-color: var(--ok); color: var(--ok); background: #eef6ef; }
+.flash-error { border-color: var(--pericolo); color: var(--pericolo); background: #f8eded; }
+.flash-info { border-color: var(--info); color: var(--info); background: #eaf1f8; }
+
+.muto, .risultati { color: var(--muto); }
+
+/* --- Galleria --- */
+.griglia {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.2rem;
+}
+.card {
+  background: var(--superficie);
+  border: 2px solid var(--bordo);
+  border-radius: var(--raggio);
+  overflow: hidden;
+}
+.card a { text-decoration: none; color: inherit; display: block; }
+.card:hover { border-color: var(--primario); }
+.card-confronto { display: grid; grid-template-columns: 1fr 1fr; }
+.card-confronto .card-foto + .card-foto { border-left: 2px solid var(--bordo); }
+.card-foto { position: relative; aspect-ratio: 1 / 1; background: var(--sfondo); margin: 0; }
+.card-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-foto figcaption {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 0.2rem 0.4rem; font-size: 0.85rem; font-weight: 700;
+  color: #fff; background: rgba(0, 0, 0, 0.55); text-align: center;
+}
+.card-noimg {
+  display: flex; align-items: center; justify-content: center;
+  height: 100%; color: var(--muto);
+}
+.card-nome { padding: 0.7rem 0.9rem; font-size: 1.15rem; font-weight: 700; }
+
+.vuoto { text-align: center; padding: 3rem 1rem; }
+.vuoto p { font-size: 1.3rem; }
+
+/* --- Dettaglio --- */
+.scheda h1 { margin-top: 0.5rem; }
+.dati { display: grid; grid-template-columns: max-content 1fr; gap: 0.2rem 1rem; }
+.dati dt { color: var(--muto); }
+.dati dd { margin: 0; }
+.descrizione { font-size: 1.1rem; margin: 1rem 0; }
+
+.foto-sezione { margin-top: 1.6rem; }
+.foto-sezione h2 { border-bottom: 2px solid var(--bordo); padding-bottom: 0.3rem; }
+.foto-serie { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+.foto-serie img {
+  width: 200px; height: 200px; object-fit: cover;
+  border-radius: var(--raggio); border: 2px solid var(--bordo);
+}
+
+.azioni-scheda { margin-top: 2rem; display: flex; gap: 0.8rem; align-items: center; }
+
+/* --- Moduli --- */
+.modulo { max-width: 620px; }
+.modulo label { display: block; margin-bottom: 1.1rem; font-weight: 700; }
+.modulo input[type="text"],
+.modulo input[type="password"],
+.modulo input[type="date"],
+.modulo textarea {
+  display: block;
+  width: 100%;
+  font-size: 1.1rem;
+  padding: 0.65rem 0.8rem;
+  margin-top: 0.3rem;
+  border: 2px solid var(--bordo);
+  border-radius: var(--raggio);
+  font-family: inherit;
+  font-weight: 400;
+}
+.modulo input[type="file"] { margin-top: 0.3rem; font-weight: 400; }
+.azioni-modulo { margin-top: 1rem; }
+
+.foto-esistenti { border: 2px solid var(--bordo); border-radius: var(--raggio); margin-bottom: 1.2rem; }
+.foto-esistenti legend { font-weight: 700; padding: 0 0.4rem; }
+.foto-item { display: inline-block; margin: 0; text-align: center; font-weight: 400; }
+.foto-item img { width: 130px; height: 130px; object-fit: cover; border-radius: 10px; border: 2px solid var(--bordo); }
+.foto-controlli { display: flex; flex-direction: column; font-size: 0.9rem; }
+.foto-controlli label { font-weight: 400; margin: 0; }
+
+.accesso { max-width: 460px; margin: 2rem auto; text-align: center; }
+.accesso .modulo { text-align: left; }
+
+@media (max-width: 520px) {
+  .brand { font-size: 1.25rem; }
+  .griglia { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .foto-serie img { width: 45vw; height: 45vw; }
+}

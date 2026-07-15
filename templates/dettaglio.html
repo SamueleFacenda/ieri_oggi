@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block titolo %}{{ persona.nome }} {{ persona.cognome }} — Allora & Oggi{% endblock %}
+
+{% macro sezione_foto(titolo, foto) %}
+  <section class="foto-sezione">
+    <h2>{{ titolo }}</h2>
+    {% if foto %}
+      <div class="foto-serie">
+        {% for f in foto %}
+          <a href="{{ url_for('foto', fid=f.id) }}" target="_blank" rel="noopener">
+            <img src="{{ url_for('foto_thumb', fid=f.id) }}"
+                 alt="{{ titolo }} di {{ persona.nome }}" loading="lazy">
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="muto">Nessuna foto.</p>
+    {% endif %}
+  </section>
+{% endmacro %}
+
+{% block contenuto %}
+  <p><a href="{{ url_for('gallery') }}">← Torna alla galleria</a></p>
+
+  <article class="scheda">
+    <h1>{{ persona.nome }} {{ persona.cognome }}</h1>
+
+    <dl class="dati">
+      {% if persona.data_nascita %}
+        <dt>Data di nascita</dt><dd>{{ persona.data_nascita.strftime('%d/%m/%Y') }}</dd>
+      {% endif %}
+      {% if persona.indirizzo %}
+        <dt>Indirizzo</dt><dd>{{ persona.indirizzo }}</dd>
+      {% endif %}
+    </dl>
+
+    {% if persona.descrizione %}
+      <p class="descrizione">{{ persona.descrizione }}</p>
+    {% endif %}
+
+    {{ sezione_foto("Da giovane", persona.foto_categoria(GIOVANE)) }}
+    {{ sezione_foto("Oggi", persona.foto_categoria(RECENTE)) }}
+
+    {% if autenticato %}
+      <div class="azioni-scheda">
+        <a class="btn" href="{{ url_for('modifica', pid=persona.id) }}">Modifica</a>
+        <form action="{{ url_for('elimina', pid=persona.id) }}" method="post" class="inline"
+              onsubmit="return confirm('Eliminare definitivamente questo profilo?');">
+          <button type="submit" class="btn btn-pericolo">Elimina</button>
+        </form>
+      </div>
+    {% endif %}
+  </article>
+{% endblock %}
