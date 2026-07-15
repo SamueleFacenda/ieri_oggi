@@ -1,5 +1,7 @@
 # Ieri & Oggi
 
+<img src="https://github.com/user-attachments/assets/162f0440-661a-46b5-abba-dfac8e3cb53e" align="right" width="240" alt="Ieri & Oggi App Preview" style="margin-left: 15px; margin-bottom: 15px;" />
+
 A small, vibe-coded web app I built for my granddad and his old *naia* buddies
 (the friends from his military service). It's a gallery of profiles of people
 who knew each other when they were young. Each profile has some personal
@@ -9,6 +11,8 @@ add, edit, or delete a profile.
 
 Italian interface, minimal and responsive (mobile + desktop). Photos are stored
 as BLOBs inside a single SQLite file — no external storage.
+
+<br clear="right" />
 
 ## Stack
 
