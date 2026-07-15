@@ -204,6 +204,6 @@ a { color: var(--primario-scuro); }
 
 @media (max-width: 520px) {
   .brand { font-size: 1.25rem; }
-  .griglia { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .griglia { grid-template-columns: 1fr; gap: 0.8rem; }
   .foto-serie img { width: 45vw; height: 45vw; }
 }
