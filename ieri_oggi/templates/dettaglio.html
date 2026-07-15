@@ -41,6 +41,7 @@
       </dl>
     {% elif ha_dettagli %}
       <p class="muto">🔒 Alcuni dettagli sono privati e visibili solo con la password.</p>
+      <p><a class="btn" href="{{ url_for('accedi', next=url_for('dettaglio', pid=persona.id)) }}">Inserisci la password</a></p>
     {% endif %}
 
     {% if persona.descrizione %}
