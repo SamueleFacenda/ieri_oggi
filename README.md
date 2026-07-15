@@ -1,51 +1,53 @@
 # Ieri & Oggi
 
-Piccola web app per una galleria di profili di persone che si conoscevano da
-giovani. Ogni profilo ha dati anagrafici e due tipi di foto: **da giovane** e
-**recente**. La galleria è pubblica; una **passphrase** condivisa serve solo per
-aggiungere, modificare o eliminare un profilo.
+A small, vibe-coded web app I built for my granddad and his old *naia* buddies
+(the friends from his military service). It's a gallery of profiles of people
+who knew each other when they were young. Each profile has some personal
+details and two kinds of photos: **young** (*da giovane*) and **recent**
+(*recente*). The gallery is public; a shared **passphrase** is only needed to
+add, edit, or delete a profile.
 
-Interfaccia in italiano, minimale e responsive (mobile + desktop). Le foto sono
-salvate come BLOB dentro un unico file SQLite — niente storage esterno.
+Italian interface, minimal and responsive (mobile + desktop). Photos are stored
+as BLOBs inside a single SQLite file — no external storage.
 
 ## Stack
 
-- **Python + Flask** (pagine renderizzate lato server, nessun build frontend)
-- **SQLAlchemy + SQLite** (interfaccia dati astratta, DB in un file)
-- **Pillow** (ridimensiona/comprime le foto e genera le miniature)
-- Dipendenze gestite dal **flake Nix**
+- **Python + Flask** (server-rendered pages, no frontend build)
+- **SQLAlchemy + SQLite** (abstract data layer, DB in a single file)
+- **Pillow** (resizes/compresses photos and generates thumbnails)
+- Dependencies managed by the **Nix flake**
 
-## Avvio (sviluppo)
+## Getting started (development)
 
 ```sh
-nix develop                       # entra nella devShell con Python e dipendenze
-flask --app app run --debug       # avvia il server di sviluppo
+nix develop                       # enter the devShell with Python and dependencies
+flask --app app run --debug       # start the development server
 ```
 
-Apri <http://127.0.0.1:5000>. La galleria si apre senza login; premi
-**"Aggiungi profilo"** e inserisci la passphrase per caricare i dati.
+Open <http://127.0.0.1:5000>. The gallery opens without login; click
+**"Aggiungi profilo"** ("Add profile") and enter the passphrase to upload data.
 
-## Configurazione (variabili d'ambiente)
+## Configuration (environment variables)
 
-| Variabile      | Default                | Descrizione                                  |
+| Variable       | Default                | Description                                  |
 |----------------|------------------------|----------------------------------------------|
-| `PASSPHRASE`   | `nonni2026`            | passphrase per caricare/modificare           |
-| `SECRET_KEY`   | generata a ogni avvio  | firma dei cookie di sessione (impostala in produzione) |
-| `DATABASE_URL` | `sqlite:///data/app.db`| URL del database                             |
-| `MAX_UPLOAD_MB`| `250`                  | dimensione massima totale di un upload (MB)  |
+| `PASSPHRASE`   | `nonni2026`            | passphrase to upload/edit                    |
+| `SECRET_KEY`   | generated on each start| signs session cookies (set it in production) |
+| `DATABASE_URL` | `sqlite:///data/app.db`| database URL                                 |
+| `MAX_UPLOAD_MB`| `250`                  | maximum total size of a single upload (MB)   |
 
-Esempio:
+Example:
 
 ```sh
-PASSPHRASE="mia-frase-segreta" SECRET_KEY="$(openssl rand -hex 32)" \
+PASSPHRASE="my-secret-phrase" SECRET_KEY="$(openssl rand -hex 32)" \
   flask --app app run
 ```
 
-## Produzione (opzionale)
+## Production (optional)
 
 ```sh
 SECRET_KEY="$(openssl rand -hex 32)" PASSPHRASE="…" \
   gunicorn --bind 0.0.0.0:8000 'app:app'
 ```
 
-Il database è il file in `data/app.db`: per un backup basta copiarlo.
+The database is the file at `data/app.db`: to back it up, just copy it.
