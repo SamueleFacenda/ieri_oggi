@@ -12,6 +12,10 @@ add, edit, or delete a profile.
 Italian interface, minimal and responsive (mobile + desktop). Photos are stored
 as BLOBs inside a single SQLite file — no external storage.
 
+> [!NOTE]
+> Claude misanderstood the "UI must be in italian" and all the function, variable names, comments are in italian now.
+> Ugly but it works.
+
 <br clear="right" />
 
 ## Stack
