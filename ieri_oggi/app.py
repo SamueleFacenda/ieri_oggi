@@ -27,12 +27,28 @@ from sqlalchemy import or_, select
 from sqlalchemy.orm import scoped_session, sessionmaker
 from werkzeug.utils import secure_filename  # noqa: F401  (utile per futuri usi)
 
-from images import ImmagineNonValida, MIME, processa
-from models import CATEGORIE, GIOVANE, RECENTE, Base, Person, Photo, make_engine
+from .images import ImmagineNonValida, MIME, processa
+from .models import CATEGORIE, GIOVANE, RECENTE, Base, Person, Photo, make_engine
 
 # --- Configurazione -------------------------------------------------------
 
-DEFAULT_DB = "sqlite:///" + os.path.join(os.path.dirname(__file__), "data", "app.db")
+# Percorso relativo alla cartella di lavoro (non al pacchetto, che è read-only
+# nel Nix store). Il servizio systemd sovrascrive con DATABASE_URL.
+DEFAULT_DB = "sqlite:///data/app.db"
+
+
+def _da_file_o_env(file_env: str, val_env: str, default: str | None = None) -> str | None:
+    """Legge un segreto da un file (se `file_env` punta a un percorso),
+    altrimenti dalla variabile `val_env`, altrimenti ritorna `default`.
+
+    Tenere i segreti in un file evita di esporli nell'ambiente del processo
+    o nel Nix store (vedi modulo NixOS + systemd LoadCredential).
+    """
+    percorso = os.environ.get(file_env)
+    if percorso:
+        with open(percorso, encoding="utf-8") as fh:
+            return fh.read().strip()
+    return os.environ.get(val_env, default)
 
 
 def percorso_locale_sicuro(target: str) -> bool:
@@ -53,8 +69,8 @@ def percorso_locale_sicuro(target: str) -> bool:
 def crea_app(config: dict | None = None) -> Flask:
     app = Flask(__name__)
     app.config.update(
-        SECRET_KEY=os.environ.get("SECRET_KEY") or secrets.token_hex(32),
-        PASSPHRASE=os.environ.get("PASSPHRASE", "nonni2026"),
+        SECRET_KEY=_da_file_o_env("SECRET_KEY_FILE", "SECRET_KEY") or secrets.token_hex(32),
+        PASSPHRASE=_da_file_o_env("PASSPHRASE_FILE", "PASSPHRASE", "nonni2026"),
         DATABASE_URL=os.environ.get("DATABASE_URL", DEFAULT_DB),
         MAX_CONTENT_LENGTH=int(os.environ.get("MAX_UPLOAD_MB", "250")) * 1024 * 1024,
         # Rafforzamento cookie di sessione: HttpOnly + SameSite=Lax mitigano
@@ -315,11 +331,3 @@ def crea_app(config: dict | None = None) -> Flask:
         return redirect(request.referrer or url_for("gallery")), 413
 
     return app
-
-
-# Istanza per `flask --app app run`.
-app = crea_app()
-
-
-if __name__ == "__main__":
-    app.run(debug=True)

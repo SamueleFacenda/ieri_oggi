@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ieri-oggi"
+version = "0.1.0"
+description = "Ieri & Oggi — galleria di profili con foto da giovani e recenti"
+requires-python = ">=3.11"
+dependencies = [
+    "flask",
+    "sqlalchemy",
+    "pillow",
+    "gunicorn",
+]
+
+[project.scripts]
+ieri-oggi = "ieri_oggi.__main__:main"
+
+[tool.setuptools]
+packages = ["ieri_oggi"]
+
+[tool.setuptools.package-data]
+ieri_oggi = ["templates/*.html", "static/*"]
